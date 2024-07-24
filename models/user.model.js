@@ -34,7 +34,7 @@ const createUser = async ({ name, lastname, email, phone, password }) => {
 };
 
 
-export const User = {
+export const userModel = {
     findUserByEmail,
     createUser
 }
