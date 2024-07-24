@@ -1,11 +1,11 @@
-import { Post } from "../models/post.model.js";
+import { postModel } from "../models/post.model.js";
 
 
 const create = async (req, res) => {
     const newPostReq = req.body
 
     try{
-        const newPost = await Post.createPost(newPostReq)
+        const newPost = await postModel.createPost(newPostReq)
 
         return res.status(201).json([newPost])
     }catch(error){
@@ -15,7 +15,7 @@ const create = async (req, res) => {
 
 const allPosts = async (req, res) => {
     try{
-        const posts = await Post.findAllPosts()
+        const posts = await postModel.findAllPosts()
 
         return res.status(200).json([posts])
     }catch(error){
@@ -27,7 +27,7 @@ const findById= async (req, res) => {
     const { id } = req.params;
 
     try{
-        const post = await Post.findPostById(id)
+        const post = await postModel.findPostById(id)
 
         return res.status(200).json(post)
     }catch(error){
@@ -39,7 +39,7 @@ const findByCreator = async (req, res) => {
     const { id } = req.params
 
     try{
-        const deletedPost = Post.removePost(id)
+        const deletedPost = postModel.removePost(id)
 
         return res.status(200).json(deletedPost);
     }catch(error){

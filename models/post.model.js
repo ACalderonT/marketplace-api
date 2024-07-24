@@ -92,7 +92,7 @@ const updatePost = async ({ id, updatedFields }) => {
 }
 
 
-export const Post = {
+export const postModel = {
     createPost,
     findAllPosts,
     findPostById,
