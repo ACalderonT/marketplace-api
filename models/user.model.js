@@ -1,40 +1,61 @@
-import { pool } from "../database/connection";
+import { pool } from "../database/connection.js";
 import format from "pg-format";
-import { handleHashPassword } from "../utils/password.utils";
+import { handleHashPassword } from "../utils/password.utils.js";
 import "dotenv/config";
 
-const findUserByEmail = async({ email }) => {
-    try{
-        const query = "SELECT * FROM users WHERE email = %L"
-        const formattedQuery = format(query, email);
-        const { rows: user } = await pool.query(formattedQuery);
 
-        const response = {
-            email: user?.email
-        }
-
-        return response
-    }catch(error){
-        console.log(error)
-    }
-};
-
-const createUser = async ({ name, lastname, email, phone, password }) => {
+const createUser = async ( name, lastname, email, phone, password ) => {
     try{
         const hashedPassword = await handleHashPassword(password);
         const query = "INSERT INTO users (name, lastname, email, phone, password) VALUES (%L, %L, %L, %L, %L) RETURNING *";
         const formattedQuery = format(query, name, lastname, email, phone, hashedPassword);
 
-        const { rows: newUser } = await pool.query(formattedQuery);
+        const { rows: newUser }= await pool.query(formattedQuery);
+        
+        const response = {
+            id: newUser[0].id,
+            name: newUser[0].name,
+            lastname: newUser[0].lastname,
+            email: newUser[0].email,
+            phone: newUser[0].phone,
+        }
 
-        return newUser[0];
+        return response;
     }catch(error){
-        console.log(error)
+        return error
     }
 };
 
+const findUserByEmail = async( email ) => {
+    try{
+        const query = "SELECT * FROM users WHERE email = %L"
+        const formattedQuery = format(query, email);
+        const { rows: user } = await pool.query(formattedQuery);
+
+        const response = user[0]
+
+        return response
+    }catch(error){
+        return error
+    }
+};
+
+const setActiveAccount = async ( userId ) => {
+    try{
+        const query = "UPDATE users SET active = true WHERE id = %L RETURNING *";
+        const formattedQuery = format(query, userId);
+        const { rows: userUpdated } = await pool.query(formattedQuery);
+        
+        const response = userUpdated[0]
+
+        return response
+    }catch(error){
+        return error
+    }
+}
 
 export const userModel = {
+    createUser,
     findUserByEmail,
-    createUser
+    setActiveAccount,
 }

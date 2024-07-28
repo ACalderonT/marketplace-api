@@ -5,12 +5,13 @@ CREATE DATABASE "marketplace-db";
 
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
-    name VARCHAR,
+    name VARCHAR NOT NULL,
     lastname VARCHAR,
-    email VARCHAR(50) NOT NULL,
-    phone VARCHAR(12),
-    password VARCHAR(60),
-    active BOOLEAN
+    email VARCHAR(50) NOT NULL UNIQUE,
+    phone VARCHAR(12) NOT NULL,
+    password VARCHAR(60) NOT NULL,
+    active BOOLEAN default false,
+    avatar VARCHAR
 );
 
 INSERT INTO users (name, lastname, email, phone, password, active) VALUES ('user_name 1', 'lastname 1', 'email@example.com', '123456789', '123', false);
