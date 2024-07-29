@@ -40,6 +40,43 @@ const create = async (req, res) => {
 
 }
 
+const read = async (req, res) => {
+    try{
+        const { email } = req.user 
+        const user = await userModel.findUserByEmail(email);
+
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                message: 'unauthenticated user'
+            })
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "authenticated user"
+        })
+    }catch(error){
+        console.log(error);
+        if (error.code) {
+			const { code, message } = getDatabaseError(error.code);
+			return res.status(code).json({ 
+                success: false, 
+                message 
+            });
+		}
+
+		return res.status(500).json({ 
+            success:false, 
+            message: "Internal server error" 
+        });
+    }
+}
+
+const update = () => {
+
+}
+
 const logIn = async (req, res) => {
         console.log(req.body, req.token)
     try{
@@ -60,12 +97,26 @@ const logIn = async (req, res) => {
             token
         })
     }catch(error){
-        return error
+        console.log(error)
+        if (error.code) {
+			const { code, message } = getDatabaseError(error.code);
+			return res.status(code).json({ 
+                success: false, 
+                message 
+            });
+		}
+
+		return res.status(500).json({ 
+            success:false, 
+            message: "Internal server error" 
+        });
     }
 }
 
 
 export const userController = {
     create,
+    read,
+    update,
     logIn,
 }

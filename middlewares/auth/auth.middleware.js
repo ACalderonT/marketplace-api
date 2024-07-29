@@ -1,13 +1,16 @@
 import jwt from 'jsonwebtoken';
-import 'dotenv/onfig';
+import 'dotenv/config';
 
 export const authMiddleware = (req, res, next) => {
     try{
         const Authorization = req.header("Authorization");
-        const token = Authorization.split("Bearer ")[1];
+        const token = Authorization?.split("Bearer ")[1];
 
         if (!token) {
-            return res.status(401).json({ error: "No token provided" })
+            return res.status(401).json({ 
+                success: false,
+                message: "No token provided"
+            })
         }
 
         jwt.verify(token, process.env.JWT_SECRET);
