@@ -74,7 +74,7 @@ const read = async (req, res) => {
 }
 
 const update = () => {
-
+    // WIP
 }
 
 const logIn = async (req, res) => {

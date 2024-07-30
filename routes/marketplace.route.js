@@ -9,7 +9,7 @@ const router = Router();
 // router.method(route, middelware, controller);
 
 // Posts
-router.post("/posts", postController.create);
+router.post("/posts", authMiddleware, postController.create);
 router.get("/posts", postController.allPosts);
 router.get("/posts/:id", postController.findById);
 router.get("/posts/:creator_id", postController.findByCreator);
