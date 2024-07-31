@@ -78,7 +78,6 @@ const update = () => {
 }
 
 const logIn = async (req, res) => {
-        console.log(req.body, req.token)
     try{
         const { email } = req.body
         const token = req.token

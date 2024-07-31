@@ -2,14 +2,29 @@ import { postModel } from "../models/post.model.js";
 
 
 const create = async (req, res) => {
-    const newPostReq = req.body
-
     try{
-        const newPost = await postModel.createPost(newPostReq)
+        const newPostReq = req.body
+        const newPost = await postModel.createPost(newPostReq.payload)
 
-        return res.status(201).json([newPost])
+        return res.status(201).json({
+            success: true,
+            message: "Post created successfully",
+            data: newPost
+        })
     }catch(error){
         console.log(error);
+        if (error.code) {
+			const { code, message } = getDatabaseError(error.code);
+			return res.status(code).json({ 
+                success: false, 
+                message 
+            });
+		}
+
+		return res.status(500).json({ 
+            success:false, 
+            message: "Internal server error" 
+        });
     }
 }
 
@@ -24,9 +39,8 @@ const allPosts = async (req, res) => {
 }
 
 const findById= async (req, res) => {
-    const { id } = req.params;
-
     try{
+        const { id } = req.params;
         const post = await postModel.findPostById(id)
 
         return res.status(200).json(post)
@@ -35,21 +49,48 @@ const findById= async (req, res) => {
     }
 }
 
-const findByCreator = async (req, res) => {
-    const { id } = req.params
-
+const getAllByCreator = async (req, res) => {
     try{
-        const deletedPost = postModel.removePost(id)
+        const { creator_id } = req.query
+        const allPosts = await postModel.findPostsByCreatorId(creator_id)
 
-        return res.status(200).json(deletedPost);
+        return res.status(200).json({
+            success: true,
+            data: allPosts
+        });
     }catch(error){
-        console.log(error)
+        console.log(error);
+        if (error.code) {
+			const { code, message } = getDatabaseError(error.code);
+			return res.status(code).json({ 
+                success: false, 
+                message 
+            });
+		}
+
+		return res.status(500).json({ 
+            success:false, 
+            message: "Internal server error" 
+        });
     }
 }
 
 const remove = async (req, res) => {
     try{
-        return res.status(200)
+        const { id } = req.params
+        const deletedPost = await postModel.removePost(id)
+
+        if(!deletedPost){
+            return res.status(404).json({
+                success: false,
+                message: "Post Not Found"
+            })
+        }
+
+        return res.status(200).json({
+            success: true,
+            deletedPost
+        })
     }catch(error){
         console.log(error);
     }
@@ -63,12 +104,39 @@ const update = async (req, res) => {
     }
 }
 
+const favorites = async (req, res) => {
+    try{
+        const { user_id } = req.query
+        const favoritePosts = await postModel.findFavoritePosts(user_id)
+
+        return res.status(200).json({
+            success: true,
+            data: favoritePosts
+        })
+    }catch(error){
+        console.log(error);
+        if (error.code) {
+			const { code, message } = getDatabaseError(error.code);
+			return res.status(code).json({ 
+                success: false, 
+                message 
+            });
+		}
+
+		return res.status(500).json({ 
+            success:false, 
+            message: "Internal server error" 
+        });
+    }
+}
+
 
 export const postController = {
     create,
     allPosts,
     findById,
-    findByCreator,
+    getAllByCreator,
     remove,
-    update   
+    update,
+    favorites
 }

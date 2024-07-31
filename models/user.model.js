@@ -7,8 +7,9 @@ import "dotenv/config";
 const createUser = async ( name, lastname, email, phone, password ) => {
     try{
         const hashedPassword = await handleHashPassword(password);
-        const query = "INSERT INTO users (name, lastname, email, phone, password) VALUES (%L, %L, %L, %L, %L) RETURNING *";
-        const formattedQuery = format(query, name, lastname, email, phone, hashedPassword);
+        const now = new Date().toISOString();
+        const query = "INSERT INTO users (name, lastname, email, phone, password, created_at, updated_at) VALUES (%L, %L, %L, %L, %L, %L, %L) RETURNING *";
+        const formattedQuery = format(query, name, lastname, email, phone, hashedPassword, now, now);
 
         const { rows: newUser }= await pool.query(formattedQuery);
         

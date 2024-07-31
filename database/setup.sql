@@ -11,7 +11,9 @@ CREATE TABLE IF NOT EXISTS users (
     phone VARCHAR(12) NOT NULL,
     password VARCHAR(60) NOT NULL,
     active BOOLEAN default false,
-    avatar VARCHAR
+    avatar VARCHAR,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
 );
 
 INSERT INTO users (name, lastname, email, phone, password, active) VALUES ('user_name 1', 'lastname 1', 'email@example.com', '123456789', '123', false);
@@ -25,6 +27,8 @@ CREATE TABLE IF NOT EXISTS posts (
     images TEXT[],
     location VARCHAR,
     creator_id INTEGER NOT NULL,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP,
     CONSTRAINT fk_creator
         FOREIGN KEY(creator_id)
             REFERENCES users(id)
@@ -35,6 +39,8 @@ INSERT INTO posts (title, description, brand, price, location, creator_id) VALUE
 CREATE TABLE IF NOT EXISTS favorites(
     user_id INTEGER NOT NULL,
     post_id INTEGER NOT NULL,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP,
     CONSTRAINT fk_user
         FOREIGN KEY(user_id)
             REFERENCES users(id),
@@ -46,13 +52,17 @@ CREATE TABLE IF NOT EXISTS favorites(
 CREATE TABLE IF NOT EXISTS categories(
     id SERIAL PRIMARY KEY,
     name VARCHAR NOT NULL,
-    description VARCHAR
+    description VARCHAR,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS category_posts(
     id SERIAL PRIMARY KEY,
     category_id INTEGER,
     post_id INTEGER,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP,
     CONSTRAINT fk_category
         FOREIGN KEY(category_id)
             REFERENCES categories(id),
