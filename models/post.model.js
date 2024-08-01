@@ -20,11 +20,27 @@ const createPost = async ({ productName, description, brand, price, images, loca
 
 const findAllPosts = async () => {
     try{
-        const query = "SELECT * FROM posts"
+        const response = {}
+        const totalQuery = "SELECT count(*) FROM posts"
+        const { rows } = await pool.query(totalQuery)
+
+        response['total'] = rows[0].count
+
+        const query = `SELECT p.id,
+                              p.title,
+                              p.description,
+                              p.price,
+                              TO_CHAR(p.created_at::date, 'dd/mm/yyyy') AS date,
+                              CONCAT(u.name, ' ', u.lastname) as user,
+                              p.images,
+                              p.creator_id
+                         FROM posts p
+                         JOIN users u ON (u.id = p.creator_id)
+                     ORDER BY p.created_at DESC`
         const { rows: posts } = await pool.query(query);
 
-        const response = posts[0]
-        return response;
+        response['products'] = posts
+        return response
     }catch(error){
         return error;
     }
@@ -32,7 +48,18 @@ const findAllPosts = async () => {
 
 const findPostById = async (id) => {
     try{
-        const query = "SELECT * FROM posts WHERE id = %L"
+        const query = `SELECT p.id,
+                              p.title,
+                              p.description,
+                              p.price,
+                              TO_CHAR(p.created_at::date, 'dd/mm/yyyy') AS date,
+                              CONCAT(u.name, ' ', u.lastname) AS seller,
+                              p.images,
+                              p.creator_id,
+                              p.location
+                         FROM posts p
+                         JOIN users u ON (u.id = p.creator_id)
+                        WHERE p.id = %L`
         const formattedQuery = format(query, id);
         const { rows: post } = await pool.query(formattedQuery);
 
@@ -64,7 +91,8 @@ const findFavoritePosts = async (user_id) => {
                               p.description,
                               p.brand,
                               p.price,
-                              p.images
+                              p.images,
+                              p.location
                          FROM favorites f
                          JOIN posts p ON (p.id = f.post_id)
                         WHERE f.user_id = %L`

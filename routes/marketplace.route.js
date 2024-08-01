@@ -9,6 +9,7 @@ const router = Router();
 // router.method(route, middelware, controller);
 // Public routes
 router.get("/posts", postController.allPosts);
+router.get("/posts/:post_id", postController.findById);
 
 // User
 router.post("/account", userController.create);

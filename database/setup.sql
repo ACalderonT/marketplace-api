@@ -16,8 +16,6 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at TIMESTAMP
 );
 
-INSERT INTO users (name, lastname, email, phone, password, active) VALUES ('user_name 1', 'lastname 1', 'email@example.com', '123456789', '123', false);
-
 CREATE TABLE IF NOT EXISTS posts (
     id SERIAL PRIMARY KEY,
     title VARCHAR NOT NULL,
@@ -33,8 +31,6 @@ CREATE TABLE IF NOT EXISTS posts (
         FOREIGN KEY(creator_id)
             REFERENCES users(id)
 );
-
-INSERT INTO posts (title, description, brand, price, location, creator_id) VALUES ('producto 1', 'descripción 1', 'brand 1', 150000, 'Santiago', 1);
 
 CREATE TABLE IF NOT EXISTS favorites(
     user_id INTEGER NOT NULL,

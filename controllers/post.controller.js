@@ -32,20 +32,51 @@ const allPosts = async (req, res) => {
     try{
         const posts = await postModel.findAllPosts()
 
-        return res.status(200).json([posts])
+        return res.status(200).json({
+            success: true,
+            data: posts
+        })
     }catch(error){
-        console.log(error)
+        console.log(error);
+        if (error.code) {
+			const { code, message } = getDatabaseError(error.code);
+			return res.status(code).json({ 
+                success: false, 
+                message 
+            });
+		}
+
+		return res.status(500).json({ 
+            success:false, 
+            message: "Internal server error" 
+        });
     }
 }
 
 const findById= async (req, res) => {
     try{
-        const { id } = req.params;
-        const post = await postModel.findPostById(id)
+        const { post_id } = req.params;
+        console.log(req.params)
+        const post = await postModel.findPostById(post_id)
 
-        return res.status(200).json(post)
+        return res.status(200).json({
+            success: true,
+            data: post
+        })
     }catch(error){
         console.log(error);
+        if (error.code) {
+			const { code, message } = getDatabaseError(error.code);
+			return res.status(code).json({ 
+                success: false, 
+                message 
+            });
+		}
+
+		return res.status(500).json({ 
+            success:false, 
+            message: "Internal server error" 
+        });
     }
 }
 
