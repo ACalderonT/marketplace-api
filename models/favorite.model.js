@@ -1,6 +1,6 @@
-import { pool } from "../database/connection";
-import format from "pg-format";
-import "dotenv/config";
+const pool = require('../database/connection');
+const format = require('pg-format');
+require('dotenv').config();
 
 const findAllFavorites = async({ userId }) => {
     try{
@@ -43,9 +43,10 @@ const removeFavoritePost = async ({ userId, postId }) => {
     }
 }
 
-
-export const Favorite = {
+const Favorite = {
     findAllFavorites,
     createFavorite,
     removeFavoritePost
 }
+
+module.exports = Favorite;

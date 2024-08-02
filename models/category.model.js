@@ -1,6 +1,6 @@
-import { pool } from "../database/connection";
-import format from "pg-format";
-import "dotenv/config";
+const pool = require('../database/connection');
+const format = require('pg-format');
+require('dotenv').config();
 
 const findAllCategories = async () => {
     try{
@@ -56,10 +56,11 @@ const removeCategory = async ({ name }) => {
     }
 }
 
-
-export const Category = {
+const Category = {
     findAllCategories,
     createCategory,
     findCategoryByName,
     removeCategory
 }
+
+module.exports = Category;

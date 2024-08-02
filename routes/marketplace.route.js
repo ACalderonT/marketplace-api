@@ -1,8 +1,8 @@
-import { Router } from 'express';
-import { postController } from '../controllers/post.controller.js';
-import { userController } from '../controllers/user.controller.js';
-import { HandleLoginMiddleware } from '../middlewares/login/handleLogin.middleware.js';
-import { authMiddleware } from '../middlewares/auth/auth.middleware.js';
+const Router = require('express');
+const postController = require('../controllers/post.controller');
+const userController = require('../controllers/user.controller');
+const HandleLoginMiddleware = require('../middlewares/login/handleLogin.middleware');
+const authMiddleware = require('../middlewares/auth/auth.middleware');
 
 const router = Router();
 
@@ -23,4 +23,4 @@ router.get("/profile/posts", authMiddleware, postController.getAllByCreator);
 router.delete("/profile/posts/:id", authMiddleware, postController.remove);
 router.get("/profile/favorites", authMiddleware, postController.favorites);
 
-export default router;
+module.exports = router;

@@ -1,6 +1,6 @@
-import { pool } from "../database/connection.js";
-import format from "pg-format";
-import "dotenv/config";
+const pool = require('../database/connection.js');
+const format = require('pg-format');
+require('dotenv').config();
 
 
 const BASE_URL = process.env.NODE_ENV === "production" ? process.env.DOMAIN_URL_APP : `${process.env.LOCAL_URL}:${process.env.PORT}`
@@ -138,8 +138,7 @@ const updatePost = async ({ id, updatedFields }) => {
     }
 }
 
-
-export const postModel = {
+const postModel = {
     createPost,
     findAllPosts,
     findPostById,
@@ -148,3 +147,5 @@ export const postModel = {
     removePost,
     updatePost
 }
+
+module.exports = postModel;

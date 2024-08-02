@@ -1,15 +1,21 @@
-import pkg from 'pg';
-import 'dotenv/config';
+const pkg = require('pg');
+require('dotenv').config();
 
 const { Pool } = pkg;
 
-export const pool = new Pool ({ 
+const pool = new Pool ({ 
     allowExitOnIdle: true
 });
 
-try{
-    const queryTest = await pool.query("Select now()");
-    if (queryTest) console.log('\x1b[7m%s\x1b[0m',`Database connected.`);
-}catch(error){
-    console.log(error)
+async function testDatabaseConnection() {
+    try{
+        const queryTest = await pool.query("Select now()");
+        if (queryTest) console.log('\x1b[7m%s\x1b[0m',`Database connected.`);
+    }catch(error){
+        console.log(error)
+    }
 }
+
+testDatabaseConnection();
+
+module.exports = pool;

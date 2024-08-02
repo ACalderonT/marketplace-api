@@ -1,10 +1,10 @@
-import jwt from 'jsonwebtoken';
-import { userModel } from '../../models/user.model.js';
-import { handleVerifyPasswordHash } from '../../utils/password.utils.js';
-import 'dotenv/config';
+const jwt = require('jsonwebtoken');
+const userModel = require('../../models/user.model');
+const { handleVerifyPasswordHash } = require('../../utils/password.utils');
+require('dotenv').config();
 
 
-export const HandleLoginMiddleware = async (req, res, next) => {
+const HandleLoginMiddleware = async (req, res, next) => {
     try{
         const { email, password } = req.body
         const { id, password: passwordHashed } = await userModel.findUserByEmail( email );
@@ -49,3 +49,5 @@ export const HandleLoginMiddleware = async (req, res, next) => {
         })
     }
 }
+
+module.exports = HandleLoginMiddleware;

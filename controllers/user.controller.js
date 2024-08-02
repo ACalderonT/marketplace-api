@@ -1,5 +1,5 @@
-import { userModel } from "../models/user.model.js";
-import { getDatabaseError } from "../lib/database.error.js";
+const userModel = require('../models/user.model');
+const getDatabaseError = require('../lib/database.error');
 
 const create = async (req, res) => {
     try{
@@ -112,10 +112,11 @@ const logIn = async (req, res) => {
     }
 }
 
-
-export const userController = {
+const userController = {
     create,
     read,
     update,
     logIn,
 }
+
+module.exports = userController;

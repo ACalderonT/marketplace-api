@@ -53,6 +53,12 @@ CREATE TABLE IF NOT EXISTS categories(
     updated_at TIMESTAMP
 );
 
+INSERT INTO categories (name, description, created_at, updated_at) VALUES
+('phones', NULL, now(), now()),
+('cameras', NULL, now(), now()),
+('laptops', NULL, now(), now()),
+('headphones', NULL, now(), now());
+
 CREATE TABLE IF NOT EXISTS category_posts(
     id SERIAL PRIMARY KEY,
     category_id INTEGER,

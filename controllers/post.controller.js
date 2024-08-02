@@ -1,5 +1,4 @@
-import { postModel } from "../models/post.model.js";
-
+const postModel = require('../models/post.model');
 
 const create = async (req, res) => {
     try{
@@ -56,7 +55,6 @@ const allPosts = async (req, res) => {
 const findById= async (req, res) => {
     try{
         const { post_id } = req.params;
-        console.log(req.params)
         const post = await postModel.findPostById(post_id)
 
         return res.status(200).json({
@@ -161,8 +159,7 @@ const favorites = async (req, res) => {
     }
 }
 
-
-export const postController = {
+const postController = {
     create,
     allPosts,
     findById,
@@ -171,3 +168,5 @@ export const postController = {
     update,
     favorites
 }
+
+module.exports = postController;

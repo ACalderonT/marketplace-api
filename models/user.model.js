@@ -1,8 +1,7 @@
-import { pool } from "../database/connection.js";
-import format from "pg-format";
-import { handleHashPassword } from "../utils/password.utils.js";
-import "dotenv/config";
-
+const pool = require('../database/connection');
+const format = require('pg-format');
+const { handleHashPassword } = require('../utils/password.utils');
+require('dotenv').config();
 
 const createUser = async ( name, lastname, email, phone, password ) => {
     try{
@@ -55,8 +54,10 @@ const setActiveAccount = async ( userId ) => {
     }
 }
 
-export const userModel = {
+const userModel = {
     createUser,
     findUserByEmail,
     setActiveAccount,
 }
+
+module.exports = userModel;

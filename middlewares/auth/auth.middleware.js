@@ -1,7 +1,7 @@
-import jwt from 'jsonwebtoken';
-import 'dotenv/config';
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
-export const authMiddleware = (req, res, next) => {
+const authMiddleware = (req, res, next) => {
     try{
         const Authorization = req.header("Authorization");
         const token = Authorization?.split("Bearer ")[1];
@@ -22,3 +22,5 @@ export const authMiddleware = (req, res, next) => {
         return res.status(401).send({ error: "Invalid Token" });
     }
 }
+
+module.exports = authMiddleware;
