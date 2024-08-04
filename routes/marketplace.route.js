@@ -3,6 +3,7 @@ const postController = require('../controllers/post.controller');
 const userController = require('../controllers/user.controller');
 const HandleLoginMiddleware = require('../middlewares/login/handleLogin.middleware');
 const authMiddleware = require('../middlewares/auth/auth.middleware');
+const categoryController = require('../controllers/category.controller');
 
 const router = Router();
 
@@ -22,5 +23,10 @@ router.post("/profile/posts", authMiddleware, postController.create);
 router.get("/profile/posts", authMiddleware, postController.getAllByCreator);
 router.delete("/profile/posts/:id", authMiddleware, postController.remove);
 router.get("/profile/favorites", authMiddleware, postController.favorites);
+
+// Filters
+router.get("/categories", categoryController.getAllCategories);
+router.get("/brands", postController.getAllBrands);
+router.get("/price", postController.getPricesLimits);
 
 module.exports = router;

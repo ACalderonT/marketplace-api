@@ -1,14 +1,19 @@
 const postModel = require('../models/post.model');
+const getDatabaseError = require('../lib/database.error')
 
 const create = async (req, res) => {
     try{
-        const newPostReq = req.body
-        const newPost = await postModel.createPost(newPostReq.payload)
+        const newPost = req.body
+        const response = await postModel.create(newPost.payload)
+
+        if(response.severity === 'ERROR'){
+            throw response
+        }
 
         return res.status(201).json({
             success: true,
             message: "Post created successfully",
-            data: newPost
+            data: response
         })
     }catch(error){
         console.log(error);
@@ -29,11 +34,16 @@ const create = async (req, res) => {
 
 const allPosts = async (req, res) => {
     try{
-        const posts = await postModel.findAllPosts()
+        const params = req.query
+        const response = await postModel.findAll(params)
+
+        if(response.severity === 'ERROR') {
+            throw response
+        }
 
         return res.status(200).json({
             success: true,
-            data: posts
+            data: response
         })
     }catch(error){
         console.log(error);
@@ -125,14 +135,6 @@ const remove = async (req, res) => {
     }
 }
 
-const update = async (req, res) => {
-    try{
-        return res.status(200)
-    }catch(error){
-        console.log(error);
-    }
-}
-
 const favorites = async (req, res) => {
     try{
         const { user_id } = req.query
@@ -159,14 +161,78 @@ const favorites = async (req, res) => {
     }
 }
 
+const getAllBrands = async (req, res) => {
+    try{
+        const allBrands = []
+        const brands = await postModel.brands()
+
+        brands.map((brand) => {
+            const newBrand = {
+                label: brand.brand,
+                value: brand.brand
+            }
+
+            allBrands.push(newBrand)
+        })
+
+        return res.status(200).json({
+            success: true,
+            data: allBrands
+        })
+    }catch(error){
+        console.log(error);
+        if (error.code) {
+			const { code, message } = getDatabaseError(error.code);
+			return res.status(code).json({ 
+                success: false, 
+                message 
+            });
+		}
+
+		return res.status(500).json({ 
+            success:false, 
+            message: "Internal server error" 
+        });
+    }
+}
+
+const getPricesLimits = async (req, res) => {
+    try{
+        const priceLimits = await postModel.prices()
+
+        return res.status(200).json({
+            success: true,
+            data: {
+                min: priceLimits[0],
+                max: priceLimits[1]
+            }
+        })
+    }catch(error){
+        console.log(error);
+        if (error.code) {
+			const { code, message } = getDatabaseError(error.code);
+			return res.status(code).json({ 
+                success: false, 
+                message 
+            });
+		}
+
+		return res.status(500).json({ 
+            success:false, 
+            message: "Internal server error" 
+        });
+    }
+}
+
 const postController = {
     create,
     allPosts,
     findById,
     getAllByCreator,
     remove,
-    update,
-    favorites
+    favorites,
+    getAllBrands,
+    getPricesLimits
 }
 
 module.exports = postController;
