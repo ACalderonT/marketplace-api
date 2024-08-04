@@ -11,9 +11,12 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at TIMESTAMP
 );
 
+DROP TABLE favorites;
+DROP TABLE posts;
+DROP TABLE categories;
 CREATE TABLE IF NOT EXISTS categories(
     id SERIAL PRIMARY KEY,
-    name VARCHAR NOT NULL,
+    name VARCHAR NOT NULL UNIQUE,
     description VARCHAR,
     created_at TIMESTAMP,
     updated_at TIMESTAMP
