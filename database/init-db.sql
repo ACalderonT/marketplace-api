@@ -1,6 +1,3 @@
-DROP DATABASE IF EXISTS "marketplace-db";
-CREATE DATABASE "marketplace-db";
-
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     name VARCHAR NOT NULL,
@@ -26,7 +23,8 @@ INSERT INTO categories (name, description, created_at, updated_at) VALUES
 ('phones', NULL, now(), now()),
 ('cameras', NULL, now(), now()),
 ('laptops', NULL, now(), now()),
-('headphones', NULL, now(), now());
+('headphones', NULL, now(), now())
+ON CONFLICT (name) DO NOTHING;
 
 CREATE TABLE IF NOT EXISTS posts (
     id SERIAL PRIMARY KEY,
