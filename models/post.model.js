@@ -2,8 +2,6 @@ const pool = require('../database/connection.js');
 const format = require('pg-format');
 require('dotenv').config();
 
-
-const BASE_URL = process.env.NODE_ENV === "production" ? process.env.DOMAIN_URL_APP : `${process.env.LOCAL_URL}:${process.env.PORT}`
 const DEFAULT_COLUMN = "created_at"
 const DEFAULT_DIRECTION = "DESC"
 const DEFAULT_LIMIT = 9

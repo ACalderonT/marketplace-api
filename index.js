@@ -10,6 +10,7 @@ app.use(cors());
 
 app.use("/", marketPlaceRoute)
 
-app.listen(process.env.API_PORT, console.log(`Listening on http://localhost:${process.env.API_PORT}`));
+const BASE_URL = process.env.NODE_ENV === "production" ? process.env.APP_URL : `${process.env.LOCAL_URL}:${process.env.API_PORT}`
+app.listen(process.env.API_PORT, console.log(`\n\x1b[7mListening on ${BASE_URL}\x1b[0m`));
 
 module.exports = app;
