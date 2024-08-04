@@ -1,8 +1,6 @@
 DROP DATABASE IF EXISTS "marketplace-db";
 CREATE DATABASE "marketplace-db";
 
-\c "marketplace-db";
-
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     name VARCHAR NOT NULL,
