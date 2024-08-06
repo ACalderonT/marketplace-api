@@ -73,8 +73,46 @@ const read = async (req, res) => {
     }
 }
 
-const update = () => {
-    // WIP
+const update = async (req, res) => {
+    try{
+        const { id } = req.params
+        const { name, lastname, phone, password } = req.body
+
+        if (!name || !password || !phone){
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Name, email, phone and password are required.' 
+            })
+        }
+        
+        const response = await userModel.updateUser(id, name, lastname, phone, password)
+
+        if(!response){
+            return res.status(204).json({
+                success: false,
+                message: "No Content"
+            })
+        }
+
+        return res.status(200).json({
+            success: true,
+            data: response
+        })
+    }catch(error){
+        console.log(error);
+        if (error.code) {
+			const { code, message } = getDatabaseError(error.code);
+			return res.status(code).json({ 
+                success: false, 
+                message 
+            });
+		}
+
+		return res.status(500).json({ 
+            success:false, 
+            message: "Internal server error" 
+        });
+    }
 }
 
 const logIn = async (req, res) => {

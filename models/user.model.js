@@ -54,10 +54,33 @@ const setActiveAccount = async ( userId ) => {
     }
 }
 
+const updateUser = async ( id, name, lastname, phone, password ) => {
+    try{
+        const hashedPassword = await handleHashPassword(password);
+        const now = new Date().toISOString();
+        const values = [name, lastname, phone, hashedPassword, now, id]
+        const query = `UPDATE users 
+                        SET name = %L,
+                            lastname = %L,
+                            phone = %L,
+                            password = %L,
+                            updated_at = %L
+                        WHERE id = %L 
+                        RETURNING *`
+        const formattedQuery = format.withArray(query, values)
+        const { rows: updatedUser } = await pool.query(formattedQuery);
+
+        return updatedUser[0]
+    }catch(error){
+        return error
+    }
+}
+
 const userModel = {
     createUser,
     findUserByEmail,
     setActiveAccount,
+    updateUser
 }
 
 module.exports = userModel;
