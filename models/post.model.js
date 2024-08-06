@@ -92,6 +92,8 @@ const findPostById = async (id) => {
                             p.title,
                             p.description,
                             p.price,
+                            p.brand,
+                            p.category_id,
                             TO_CHAR(p.created_at::date, 'dd/mm/yyyy') AS date,
                             CONCAT(u.name, ' ', u.lastname) AS seller,
                             p.images,
@@ -124,28 +126,6 @@ const findPostsByCreatorId = async (creator_id) => {
     }
 };
 
-const findFavoritePosts = async (user_id) => {
-    try{
-        const query = `SELECT p.id,
-                              p.title,
-                              p.description,
-                              p.brand,
-                              p.price,
-                              p.images,
-                              p.location
-                         FROM favorites f
-                         JOIN posts p ON (p.id = f.post_id)
-                        WHERE f.user_id = %L`
-        const formattedQuery = format(query, user_id);
-        const { rows: favorites } = await pool.query(formattedQuery);
-        const response = favorites;
-
-        return response
-    }catch(error){
-        return error
-    }
-};
-
 const removePost = async (post_id) => {
     try{
         const query = "DELETE FROM posts WHERE id = %L RETURNING *"
@@ -158,18 +138,23 @@ const removePost = async (post_id) => {
     }
 }
 
-const updatePost = async ({ id, updatedFields }) => {
-    const setClause = Object.keys(updatedFields)
-        .map((key, index) => `${key} = $${index + 1}`)
-        .join(', ')
-
-    const values = Object.values(updatedFields);
-
-    values.push(id);
-
+const updatePost = async (id, { productName, description, brand, price, images, location, category, creatorId }) => {
     try{
-        const query = `UPDATE posts SET ${setClause} WHERE id = $${values.length} RETURNING *`;
-        const  { rows: updatedPost } = await pool.query(query, values);
+        const now = new Date().toISOString();
+        const values = [productName, description, brand, price, images, location, creatorId, category, now, id]
+        const query = `UPDATE posts 
+                        SET title = %L::text,
+                            description = %L,
+                            brand = %L,
+                            price = %L,
+                            images = %L,
+                            location = %L,
+                            creator_id = %L,
+                            category_id = %L,
+                            updated_at = %L
+                        WHERE id = %L RETURNING *`;
+        const formattedQuery = format.withArray(query, values)
+        const  { rows: updatedPost } = await pool.query(formattedQuery);
 
         return updatedPost[0]
     }catch(error){
@@ -207,7 +192,6 @@ const postModel = {
     findAll,
     findPostById,
     findPostsByCreatorId,
-    findFavoritePosts,
     removePost,
     updatePost,
     brands,

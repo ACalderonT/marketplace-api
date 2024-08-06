@@ -120,9 +120,9 @@ const remove = async (req, res) => {
         const deletedPost = await postModel.removePost(id)
 
         if(!deletedPost){
-            return res.status(404).json({
+            return res.status(204).json({
                 success: false,
-                message: "Post Not Found"
+                message: "No Content"
             })
         }
 
@@ -132,32 +132,6 @@ const remove = async (req, res) => {
         })
     }catch(error){
         console.log(error);
-    }
-}
-
-const favorites = async (req, res) => {
-    try{
-        const { user_id } = req.query
-        const favoritePosts = await postModel.findFavoritePosts(user_id)
-
-        return res.status(200).json({
-            success: true,
-            data: favoritePosts
-        })
-    }catch(error){
-        console.log(error);
-        if (error.code) {
-			const { code, message } = getDatabaseError(error.code);
-			return res.status(code).json({ 
-                success: false, 
-                message 
-            });
-		}
-
-		return res.status(500).json({ 
-            success:false, 
-            message: "Internal server error" 
-        });
     }
 }
 
@@ -224,15 +198,50 @@ const getPricesLimits = async (req, res) => {
     }
 }
 
+const update = async (req, res) => {
+    try{
+        const { id } = req.params
+        const payload = req.body;
+        const updatedPost = await postModel.updatePost(id, payload);
+
+        if(!updatedPost){
+            res.status(204).json({
+                success: false,
+                message: "No Content"
+            })
+        }
+
+        res.status(200).json({
+            success: true,
+            data: updatedPost
+        })
+        
+    }catch(error){
+        console.log(error);
+        if (error.code) {
+			const { code, message } = getDatabaseError(error.code);
+			return res.status(code).json({ 
+                success: false, 
+                message 
+            });
+		}
+
+		return res.status(500).json({ 
+            success:false, 
+            message: "Internal server error" 
+        });
+    }
+}
+
 const postController = {
     create,
     allPosts,
     findById,
     getAllByCreator,
-    remove,
-    favorites,
     getAllBrands,
-    getPricesLimits
+    getPricesLimits,
+    remove,
+    update
 }
 
 module.exports = postController;
